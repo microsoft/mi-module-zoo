@@ -17,7 +17,7 @@ setup(
     author="Machine Intelligence",
     package_data={"ptgnn": ["py.typed"]},
     install_requires=[
-        "torch>=1.8.0",
+        "torch>=1.9.1",
         "typing-extensions",
     ],
     extras_require={"dev": ["black", "isort", "pre-commit", "numpy"], "aml": ["azureml"]},
