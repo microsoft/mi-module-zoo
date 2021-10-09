@@ -10,13 +10,10 @@ steps:
   inputs:
     toolMajorVersion: 'V2'
 - task: Semmle@1
-  displayName: 'Run Semmle (python)'
-  env:
-    SYSTEM_ACCESSTOKEN: $(System.AccessToken) 
   inputs:
-    sourceCodeDirectory: '$(Build.SourcesDirectory)'
-    language: 'python'
-    querySuite: 'Recommended'
-    timeout: '1800'
-    ram: '16384'
-    addProjectDirToScanningExclusionList: true
+    sourceCodeDirectory: '$(Build.SourcesDirectory)'
+    language: 'python'
+    querySuite: 'Recommended'
+    timeout: '1800'
+    ram: '16384'
+    addProjectDirToScanningExclusionList: true
