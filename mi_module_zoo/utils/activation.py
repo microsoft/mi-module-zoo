@@ -1,6 +1,11 @@
 import torch
 from functools import lru_cache
-from typing import Callable, Dict, Final
+from typing import Callable, Dict
+
+try:
+    from typing import Final
+except ImportError:
+    from typing_extensions import Final
 
 
 def identity(x: torch.Tensor) -> torch.Tensor:

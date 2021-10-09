@@ -1,6 +1,11 @@
 import torch
 from torch import nn
-from typing import Callable, Literal, Optional, Tuple, Union
+from typing import Callable, Optional, Tuple, Union
+
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 from mi_module_zoo.relationalmultiheadattention import RelationalMultiheadAttention
 from mi_module_zoo.utils.activation import get_activation_fn

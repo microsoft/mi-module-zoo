@@ -1,6 +1,11 @@
 import random
 import torch
-from typing import Collection, Dict, Final, Optional, Set, Tuple, Union
+from typing import Collection, Dict, Optional, Set, Tuple, Union
+
+try:
+    from typing import Final
+except ImportError:
+    from typing_extensions import Final
 
 __all__ = ["TensorSpec", "generate_tensors"]
 
