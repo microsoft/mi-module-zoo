@@ -23,7 +23,7 @@ steps:
     alertWarningLevel: 'High'
 - task: PublishSecurityAnalysisLogs@2
   inputs:
-    ArtifactName: 'CodeAnalysisLogs' 
+    ArtifactName: 'CodeAnalysisLogs'
     ArtifactType: 'Container'
     AllTools: true
-    ToolLogsNotFoundAction: 'Standard' 
+    ToolLogsNotFoundAction: 'Standard'
