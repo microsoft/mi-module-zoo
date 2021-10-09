@@ -1,7 +1,12 @@
 import torch
 import unittest
 from itertools import product
-from typing import Iterator, Literal, NamedTuple
+from typing import Iterator, NamedTuple
+
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 from mi_module_zoo.relationaltransformerlayers import (
     RelationalTransformerDecoderLayer,

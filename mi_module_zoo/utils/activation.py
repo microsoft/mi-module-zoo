@@ -1,5 +1,4 @@
 import torch
-from functools import lru_cache
 from typing import Callable, Dict
 
 try:
@@ -35,7 +34,6 @@ ACTIVATION_FNS: Final[Dict[str, Callable[[torch.Tensor], torch.Tensor]]] = {
 }
 
 
-@lru_cache
 def get_activation_fn(activation: str) -> Callable[[torch.Tensor], torch.Tensor]:
     """
     Get an activation function by name.
