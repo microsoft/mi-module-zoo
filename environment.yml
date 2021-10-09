@@ -1,0 +1,11 @@
+name: mi-module-zoo-env
+channels:
+  - defaults
+dependencies:
+  - pip
+  - python>=3.8
+  - numpy
+  - pip:
+    - docopt
+    - torch==1.9.0
+    - typing-extensions
