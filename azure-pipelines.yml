@@ -1,15 +1,29 @@
+trigger:
+-  master
+
 pool:
-  vmImage: 'vs2017-win2016'
+  vmImage: 'windows-latest'
+
 steps:
+- task: CredScan@2
+  inputs:
+    toolMajorVersion: 'V2'
+- task: Semmle@1
+  inputs:
+    sourceCodeDirectory: '$(Build.SourcesDirectory)'
+    language: 'python'
+    querySuite: 'Recommended'
+    timeout: '1800'
+    ram: '16384'
+    addProjectDirToScanningExclusionList: true
 - task: ComponentGovernanceComponentDetection@0
   inputs:
     scanType: 'Register'
     verbosity: 'Verbose'
     alertWarningLevel: 'High'
-- task: CredScan@2
+- task: PublishSecurityAnalysisLogs@2
   inputs:
-    toolMajorVersion: 'V2'
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-semmle.Semmle@0
-  displayName: 'Run Semmle (python)'
-  inputs:
-    language: python
+    ArtifactName: 'CodeAnalysisLogs' 
+    ArtifactType: 'Container'
+    AllTools: true
+    ToolLogsNotFoundAction: 'Standard' 
