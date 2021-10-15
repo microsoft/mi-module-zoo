@@ -12,6 +12,61 @@ from mi_module_zoo.utils.activation import get_activation_fn
 
 
 class RelationalTransformerEncoderLayer(nn.Module):
+    """
+    A relational transformer encoder layer. That supports both discrete/sparse edge types
+    and dense (all-to-all) relations, different ReZero modes, and different normalization
+    modes.
+
+    Args:
+        d_model: the dimensionality of the inputs/ouputs of the transformer layer.
+        key_query_dimension: the dimensionality of key/queries in the multihead attention.
+        value_dimension: the dimensionality of the multihead attention values,
+        num_heads: the number of attention heads,
+        num_edge_types: the number of discrete edge types. If ``0``, no discrete edge types
+            are to be used.
+        add_reverse_edges: if ``num_edge_types>0`` should reverse edge types be introduced?
+        dim_feedforward: the dimensionality of the feedforward hidden layer in the transformer layer.
+        dropout_rate: the dropout rate in :math:`[0, 1)`,
+        activation: the activation function to be used in the feedforward layer. Defaults to ReLU.
+        use_edge_value_biases: should the discrete edges (relations) use value biases?
+        edge_attention_bias_is_scalar: should ``edge_attention_biases`` be a scalar or
+          of size ``key_query_dimension``?
+        rezero_mode: Three different modes are supported
+
+          * ``"off"``: No ReZero use.
+          * ``"scalar"``: Sublayers (attention / fully connected) are scaled by a single scalar, i.e.,
+            ``alpha`` is a scalar in the following: ::
+
+                      x' = x + alpha * SelfAtt(x)
+                      x'' = x' + alpha * Boom(x')
+                      return x''
+
+            See https://arxiv.org/pdf/2003.04887.pdf.
+          * ``"vector"``: Sublayers (attention / fully connected) are scaled by one value per dim, i.e.,
+            ``alpha`` is a vector in the following: ::
+
+                        x' = x + alpha * SelfAtt(x)
+                        x'' = x' + alpha * Boom(x')
+                        return x''
+
+            See https://arxiv.org/pdf/2103.17239.pdf.
+
+        normalisation_mode: Three different modes are supported:
+
+          * ``"off"``: use no layer norm at all. Likely to diverge without using ReZero as well.
+          * ``"prenorm"``: Normalise values before each sublayer (attention / fully connected): ::
+
+                    x' = x + SelfAtt(LN(x))
+                    x'' = x' + Boom(LN(x'))
+                    return x''
+
+          * ``"postnorm"``: Normalise values after each sublayer: ::
+
+                    x' = LN(x + SelfAtt(x))
+                    x'' = LN(x' + Boom(x))
+                    return x''
+    """
+
     def __init__(
         self,
         d_model: int,
@@ -28,33 +83,6 @@ class RelationalTransformerEncoderLayer(nn.Module):
         rezero_mode: Literal["off", "scalar", "vector", "scalar-tied"] = "off",
         normalisation_mode: Literal["off", "prenorm", "postnorm"] = "postnorm",
     ):
-        """
-        Args:
-            - rezero_mode: Three different modes are supported:
-                * "off": No ReZero use.
-                * "scalar": Sublayers (attention / fully connected) are scaled by a single scalar, i.e.,
-                  \alpha is a scalar in the following:
-                    x' = x + \alpha * SelfAtt(x)
-                    x'' = x' + \alpha * Boom(x')
-                    return x''
-                  See https://arxiv.org/pdf/2003.04887.pdf.
-                * "vector": Sublayers (attention / fully connected) are scaled by one value per dim, i.e.,
-                  \alpha is a vector in the following:
-                    x' = x + \alpha * SelfAtt(x)
-                    x'' = x' + \alpha * Boom(x')
-                    return x''
-                  See https://arxiv.org/pdf/2103.17239.pdf.
-            - normalisation_mode: Three different modes are supported:
-                * "off": use no layer norm at all. Likely to diverge without using rezero as well.
-                * "prenorm": Normalise values before each sublayer (attention / fully connected):
-                    x' = x + SelfAtt(LN(x))
-                    x'' = x' + Boom(LN(x'))
-                    return x''
-                * "postnorm": Normalise values after each sublayer:
-                    x' = LN(x + SelfAtt(x))
-                    x'' = LN(x' + Boom(x))
-                    return x''
-        """
         super(RelationalTransformerEncoderLayer, self).__init__()
         assert 0 <= dropout_rate < 1
 
@@ -148,14 +176,16 @@ class RelationalTransformerEncoderLayer(nn.Module):
         ] = None,
     ):
         """
-        :param src: A [batch_size, seq_len, D] tensor.
-        :param src_mask: A [batch_size, seq_len] bool tensor.  `True` values are those
+        :param src: A ``[batch_size, seq_len, D]`` tensor.
+        :param src_mask: A ``[batch_size, seq_len]`` bool tensor.  ``True`` values are those
             that should be masked (no attention paid).
-        :param edges: [num_edges, 3] each row has the form (batch_idx, source_idx, target_idx)
-        :param edge_types: [num_edges] of integers from 0..num_edge_types
-        :param dense_relations_kq: [batch_size, seq_len, seq_len, num_heads]
-        :param dense_relations_kv: [batch_size, seq_len, seq_len, num_heads, value_dimension]
-        :return:  [batch_size, seq_len, D]
+        :param edges: ``[num_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``
+          or an empty tensor of shape ``(0, 3)`` of sparse edges are unused.
+        :param edge_types: ``[num_edges]`` of integers from ``0..num_edge_types-1`` or an empty tensor
+          if sparse edges are unused.
+        :param dense_relations_kq: Optional ``[batch_size, seq_len, seq_len, num_heads]``.
+        :param dense_relations_kv: Optional ``[batch_size, seq_len, seq_len, num_heads, value_dimension]``
+        :return:  ``[batch_size, seq_len, D]``
         """
         # --- Sublayer 1: Self-Attention:
         attn_input = src
@@ -202,6 +232,11 @@ class RelationalTransformerEncoderLayer(nn.Module):
 
 
 class RelationalTransformerDecoderLayer(nn.Module):
+    """
+    A relational transformer decoder layer. See the :class:`.RelationalTransformerEncoderLayer`
+    for more information.
+    """
+
     def __init__(
         self,
         d_model: int,
@@ -275,23 +310,30 @@ class RelationalTransformerDecoderLayer(nn.Module):
         dense_encoder_relations_kv: Optional[torch.Tensor] = None,
     ):
         """
-        :param tgt: A [batch_size, seq_len, D] tensor.
-        :param memory: A [batch_size, mem_len, D] tensor.
-        :param tgt_mask: A [batch_size, seq_len] bool tensor.  `True` values are those
+        :param tgt: A ``[batch_size, seq_len, D]`` tensor.
+        :param memory: A ``[batch_size, mem_len, D]`` tensor.
+        :param tgt_mask: A ``[batch_size, seq_len]`` bool tensor.  ``True`` values are those
             that should be masked (no attention paid).
-        :param memory_mask: A [batch_size, mem_len] bool tensor.  `True` values are those
+        :param memory_mask: A ``[batch_size, mem_len]`` bool tensor.  ``True`` values are those
             that should be masked (no attention paid).
-        :param self_edges: [num_self_edges, 3] each row has the form (batch_idx, source_idx, target_idx)
-        :param self_edge_types: [num_self_edges] of integers from 0..num_self_edges
-        :param encoder_edges: [num_enc_edges, 3] each row has the form (batch_idx, source_idx, target_idx)
-            Note: target_idx refers to elements in the memory.
-        :param encoder_edge_types: [num_enc_edges] of integers from 0..num_enc_edges
-        :param dense_self_relations_kq: [batch_size, seq_len, seq_len, num_heads]
-        :param dense_self_relations_kv: [batch_size, seq_len, seq_len, num_heads, value_dimension]
-        :param dense_encoder_relations_kq: [batch_size, seq_len, mem_len, num_heads]
-        :param dense_encoder_relations_kv: [batch_size, seq_len, mem_len, num_heads, value_dimension]
+        :param self_edges: ``[num_self_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``
+          or an empty tensor of shape ``(0, 3)`` of sparse edges are unused..
+        :param self_edge_types: ``[num_self_edges]`` of integers from ``0..num_self_edges-1``.
+        :param encoder_edges: ``[num_enc_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``
+          or an empty tensor of shape ``(0, 3)`` of sparse edges are unused.
+          Note: ``target_idx`` refers to elements in the memory.
 
-        :return:  [batch_size, seq_len, H]
+        :param encoder_edge_types: ``[num_enc_edges]`` of integers from ``0..num_enc_edges-1``
+        :param dense_self_relations_kq: Optional ``[batch_size, seq_len, seq_len, num_heads]`` for the
+          relationships within the decoder.
+        :param dense_self_relations_kv: Optional ``[batch_size, seq_len, seq_len, num_heads, value_dimension]``
+          relationships within the decoder.
+        :param dense_encoder_relations_kq: Optional ``[batch_size, seq_len, mem_len, num_heads]``
+          relationships between the encoded inputs and the decoder.
+        :param dense_encoder_relations_kv: Optional ``[batch_size, seq_len, mem_len, num_heads, value_dimension]``
+          relationships between the encoded inputs and the decoder.
+
+        :return:  ``[batch_size, seq_len, H]``
         """
 
         def callback(src: torch.Tensor, rezero_alpha: Union[float, torch.Tensor]) -> torch.Tensor:

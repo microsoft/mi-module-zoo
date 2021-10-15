@@ -39,6 +39,7 @@ def get_activation_fn(activation: str) -> Callable[[torch.Tensor], torch.Tensor]
     Get an activation function by name.
     :param activation: the name of the activation function.
 
+    :param activation: a case-insensitive name of the activation function.
     :returns: an activation function
     """
     activation = activation.lower()

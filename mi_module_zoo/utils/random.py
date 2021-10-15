@@ -6,6 +6,9 @@ import torch
 def set_seed(seed: int) -> None:
     """
     Set the seed for most common sources of randomness.
+
+    Args:
+        seed: the seed to use.
     """
     random.seed(seed)
     np.random.seed(seed)

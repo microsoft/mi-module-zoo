@@ -8,6 +8,8 @@ __all__ = ["MultiheadInitType", "ElementwiseTransformType", "SetTransformer", "I
 
 
 class MultiheadInitType(Enum):
+    """Initialization type for multihead attetion."""
+
     XAVIER = 0
     KAIMING = 1
 
@@ -68,6 +70,21 @@ class SetTransformer(nn.Module):
 
     Generates an embedding from a set of features using several blocks of self attention
     and pooling by attention.
+
+    Args:
+            input_embedding_dim: Dimension of the input data, the embedded features.
+            set_embedding_dim: Dimension of the output data, the set embedding.
+            transformer_embedding_dim: Embedding dimension to be used in the set transformer blocks.
+            num_heads: Number of heads in each multi-head attention block.
+            num_blocks: Number of SABs in the model.
+            num_seed_vectors: Number of seed vectors used in the pooling block (PMA).
+            use_isab: Should ISAB blocks be used instead of SAB blocks.
+            num_inducing_points: Number of inducing points.
+            multihead_init_type: How linear layers in nn.MultiheadAttention are initialised. Valid options are "xavier" and "kaiming".
+            use_layer_norm: Whether layer normalisation should be used in MAB blocks.
+            elementwise_transform_type: What version of the elementwise transform (rFF) should be used. Valid options are "single" and "double".
+            use_elementwise_transform_pma: Whether an elementwise transform (rFF) should be used in the PMA block.
+
     """
 
     def __init__(
@@ -86,21 +103,6 @@ class SetTransformer(nn.Module):
         use_elementwise_transform_pma: bool = True,
         dropout_rate: float = 0.0,
     ):
-        """
-        Args:
-            input_embedding_dim: Dimension of the input data, the embedded features.
-            set_embedding_dim: Dimension of the output data, the set embedding.
-            transformer_embedding_dim: Embedding dimension to be used in the set transformer blocks.
-            num_heads: Number of heads in each multi-head attention block.
-            num_blocks: Number of SABs in the model.
-            num_seed_vectors: Number of seed vectors used in the pooling block (PMA).
-            use_isab: Should ISAB blocks be used instead of SAB blocks.
-            num_inducing_points: Number of inducing points.
-            multihead_init_type: How linear layers in nn.MultiheadAttention are initialised. Valid options are "xavier" and "kaiming".
-            use_layer_norm: Whether layer normalisation should be used in MAB blocks.
-            elementwise_transform_type: What version of the elementwise transform (rFF) should be used. Valid options are "single" and "double".
-            use_elementwise_transform_pma: Whether an elementwise transform (rFF) should be used in the PMA block.
-        """
         super().__init__()
         self._transform_input_dimension = transformer_embedding_dim is not None
         if transformer_embedding_dim is not None:
@@ -163,10 +165,10 @@ class SetTransformer(nn.Module):
     def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
         Args:
-            x: Embedded features tensor with shape [batch_size, set_size, input_embedding_dim].
-            mask: Mask tensor with shape (batch_size, set_size), `True` values are masked
+            x: Embedded features tensor with shape ``[batch_size, set_size, input_embedding_dim]``.
+            mask: Mask tensor with shape ``[batch_size, set_size]``, ``True`` values are masked
         Returns:
-            set_embedding: Set embedding tensor with shape (batch_size, set_embedding_dim).
+            Set embedding tensor with shape ``[batch_size, set_embedding_dim]``.
         """
         batch_size, _, _ = x.shape
 
@@ -284,11 +286,11 @@ class SAB(nn.Module):
 
     def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
-        :param x: Input tensor with shape [batch_size, set_size, embedding_dim] to be used as query, key, and value.
-        :param mask: Boolean mask tensor with shape [batch_size, set_size], True values are masked.
+        :param x: Input tensor with shape ``[batch_size, set_size, embedding_dim]`` to be used as query, key, and value.
+        :param mask: Boolean mask tensor with shape ``[batch_size, set_size]``, True values are masked.
                 If None, everything is observed.
         Returns:
-            output: Tensor with shape [batch_size, set_size, embedding_dim].
+            output: Tensor with shape ``[batch_size, set_size, embedding_dim]``.
         """
         return self._mab(x, x, mask)
 
@@ -296,6 +298,15 @@ class SAB(nn.Module):
 class PMA(nn.Module):
     """
     Pooling by Multihead Attention block of the Set Transformer model.
+    Seed vectors attend to the given values.
+
+    :param embedding_dim: Dimension of the input data.
+    :param num_heads: Number of heads.
+    :param num_seed_vectors: Number of seed vectors.
+    :param multihead_init_type: How linear layers in nn.MultiheadAttention are initialised.
+    :param use_layer_norm: Whether layer normalisation should be used in MAB blocks.
+    :param elementwise_transform_type: What version of the elementwise transform (rFF) should be used.
+    :param use_elementwise_transform_pma: Whether an elementwise transform (rFF) should be used in the PMA block.
     """
 
     def __init__(
@@ -309,15 +320,6 @@ class PMA(nn.Module):
         use_elementwise_transform_pma: bool,
         dropout_rate: float,
     ):
-        """
-        :param embedding_dim: Dimension of the input data.
-        :param num_heads: Number of heads.
-        :param num_seed_vectors: Number of seed vectors.
-        :param multihead_init_type: How linear layers in nn.MultiheadAttention are initialised.
-        :param use_layer_norm: Whether layer normalisation should be used in MAB blocks.
-        :param elementwise_transform_type: What version of the elementwise transform (rFF) should be used.
-        :param use_elementwise_transform_pma: Whether an elementwise transform (rFF) should be used in the PMA block.
-        """
         super().__init__()
         self._mab = MAB(
             embedding_dim=embedding_dim,
@@ -342,14 +344,13 @@ class PMA(nn.Module):
 
     def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
-        Seed vectors attend to the given values.
-        The mask enforces that only the selected values are attended to in multihead attention.
         Args:
-            x: Input tensor with shape [batch_size, set_size, embedding_dim] to be used as key and value.
-            mask: Mask tensor with shape [batch_size, set_size], True for masked elements.
-                If None, everything is observed.
+            x: Input tensor with shape ``[batch_size, set_size, embedding_dim]`` to be used as key and value.
+            mask: Mask tensor with shape ``[batch_size, set_size]``, ``True`` for masked elements.
+                If ``None``, everything is observed. The mask enforces that only the selected values are
+                attended to in multihead attention.
         Returns:
-            output: Attention output tensor with shape [batch_size, num_seed_vectors, embedding_dim].
+            Attention output tensor with shape ``[batch_size, num_seed_vectors, embedding_dim]``.
         """
         if self._elementwise_transform:
             x = self._elementwise_transform(x)
@@ -363,10 +364,18 @@ class PMA(nn.Module):
 
 class ISAB(nn.Module):
     """
-    Inducing-point self attention block. This reduces memory use and compute time from O(N^2) to O(NM)
-    where N is the number of features and M is the number of inducing points.
+    Inducing-point self attention block. This reduces memory use and compute time from :math:`O(N^2)` to :math:`O(NM)`
+    where :math:`N` is the number of features and :math:`M` is the number of inducing points.
 
     Reference: https://arxiv.org/pdf/1810.00825.pdf
+
+    Args:
+        embedding_dim: Dimension of the input data.
+        num_heads: Number of heads.
+        num_inducing_points: Number of inducing points.
+        multihead_init_type: How linear layers in nn.MultiheadAttention are initialised.
+        use_layer_norm: Whether layer normalisation should be used in MAB blocks.
+        elementwise_transform_type: What version of the elementwise transform (rFF) should be used.
     """
 
     def __init__(
@@ -379,15 +388,6 @@ class ISAB(nn.Module):
         elementwise_transform_type: ElementwiseTransformType,
         dropout_rate: float,
     ):
-        """
-        Args:
-            embedding_dim: Dimension of the input data.
-            num_heads: Number of heads.
-            num_inducing_points: Number of inducing points.
-            multihead_init_type: How linear layers in nn.MultiheadAttention are initialised.
-            use_layer_norm: Whether layer normalisation should be used in MAB blocks.
-            elementwise_transform_type: What version of the elementwise transform (rFF) should be used.
-        """
         super().__init__()
         self._mab1 = MAB(
             embedding_dim=embedding_dim,
@@ -412,14 +412,16 @@ class ISAB(nn.Module):
 
     def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """
-        The mask enforces that only the selected values are attended to in multihead attention,
-        but the output is generated for all elements of x.
+
+
         Args:
-            x: Input tensor with shape [batch_size, set_size, embedding_dim] to be used as query, key and value.
-            mask: Mask tensor with shape [batch_size, set_size], True values are masked.
-                If None, all elements are used is used.
+            x: Input tensor with shape ``[batch_size, set_size, embedding_dim]`` to be used as query, key and value.
+            mask: Mask tensor with shape ``[batch_size, set_size]``, ``True`` values are masked.
+                If ``None``, all elements are used is used. The mask enforces that only the selected
+                values are attended to in multihead attention, but the output is generated for all
+                elements of x.
         Returns:
-            output: Attention output tensor with shape (batch_size, set_size, embedding_dim).
+            Attention output tensor with shape ``[batch_size, set_size, embedding_dim]``.
         """
         batch_size, _, _ = x.shape
         inducing_points = self._inducing_points.expand(
@@ -428,4 +430,4 @@ class ISAB(nn.Module):
         y = self._mab1(
             query=inducing_points, key=x, key_mask=mask
         )  #  [batch_size, num_inducing_points, embedding_dim]
-        return self._mab2(query=x, key=y)  # Shape [batch_size, set_size, embedding_dim]
+        return self._mab2(query=x, key=y)  # [batch_size, set_size, embedding_dim]

@@ -17,7 +17,7 @@ def construct_mlp(
         hidden layers.
     :param activation_layer: the activation layer used between the input and hidden layers.
 
-    :returns: a nn.Sequential with the constructed MLP.
+    :returns: a :class:`nn.Sequential` with the constructed MLP.
     """
     layers: List[nn.Module] = []
     cur_hidden_dim = input_dim
