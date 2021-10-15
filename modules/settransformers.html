@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Set Transformers &#8212; mi-module-zoo  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Utilities" href="utils.html" />
+    <link rel="prev" title="Relational Multi-Head Attention" href="relationalmha.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          mi-module-zoo</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="relationaltransformer.html">Relational Transformer Encoder/Decoder Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relationalmha.html">Relational Multi-Head Attention</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Set Transformers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Set Transformers</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="relationalmha.html" title="Previous Chapter: Relational Multi-Head Attention"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Relational Mu...</span>
+    </a>
+  </li>
+  <li>
+    <a href="utils.html" title="Next Chapter: Utilities"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Utilities &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/modules/settransformers.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="set-transformers">
+<h1>Set Transformers<a class="headerlink" href="#set-transformers" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">mi_module_zoo.settransformer</span></code> contains implementations of
+transformer-based models that process sets.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.SetTransformer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mi_module_zoo.settransformer.</span></span><span class="sig-name descname"><span class="pre">SetTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_embedding_dim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_embedding_dim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformer_embedding_dim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_blocks</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_seed_vectors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_isab</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_inducing_points</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multihead_init_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#mi_module_zoo.settransformer.MultiheadInitType" title="mi_module_zoo.settransformer.MultiheadInitType"><span class="pre">mi_module_zoo.settransformer.MultiheadInitType</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">MultiheadInitType.XAVIER</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_layer_norm</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementwise_transform_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">mi_module_zoo.settransformer.ElementwiseTransformType</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">ElementwiseTransformType.SINGLE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_elementwise_transform_pma</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/settransformer.html#SetTransformer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.settransformer.SetTransformer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Set Transformer model <a class="reference external" href="https://arxiv.org/abs/1810.00825">https://arxiv.org/abs/1810.00825</a></p>
+<p>Generates an embedding from a set of features using several blocks of self attention
+and pooling by attention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_embedding_dim</strong> – Dimension of the input data, the embedded features.</p></li>
+<li><p><strong>set_embedding_dim</strong> – Dimension of the output data, the set embedding.</p></li>
+<li><p><strong>transformer_embedding_dim</strong> – Embedding dimension to be used in the set transformer blocks.</p></li>
+<li><p><strong>num_heads</strong> – Number of heads in each multi-head attention block.</p></li>
+<li><p><strong>num_blocks</strong> – Number of SABs in the model.</p></li>
+<li><p><strong>num_seed_vectors</strong> – Number of seed vectors used in the pooling block (PMA).</p></li>
+<li><p><strong>use_isab</strong> – Should ISAB blocks be used instead of SAB blocks.</p></li>
+<li><p><strong>num_inducing_points</strong> – Number of inducing points.</p></li>
+<li><p><strong>multihead_init_type</strong> – How linear layers in nn.MultiheadAttention are initialised. Valid options are “xavier” and “kaiming”.</p></li>
+<li><p><strong>use_layer_norm</strong> – Whether layer normalisation should be used in MAB blocks.</p></li>
+<li><p><strong>elementwise_transform_type</strong> – What version of the elementwise transform (rFF) should be used. Valid options are “single” and “double”.</p></li>
+<li><p><strong>use_elementwise_transform_pma</strong> – Whether an elementwise transform (rFF) should be used in the PMA block.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.SetTransformer.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../_modules/mi_module_zoo/settransformer.html#SetTransformer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.settransformer.SetTransformer.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Embedded features tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">set_size,</span> <span class="pre">input_embedding_dim]</span></code>.</p></li>
+<li><p><strong>mask</strong> – Mask tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">set_size]</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code> values are masked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Set embedding tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">set_embedding_dim]</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.ISAB">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mi_module_zoo.settransformer.</span></span><span class="sig-name descname"><span class="pre">ISAB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_dim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_inducing_points</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multihead_init_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#mi_module_zoo.settransformer.MultiheadInitType" title="mi_module_zoo.settransformer.MultiheadInitType"><span class="pre">mi_module_zoo.settransformer.MultiheadInitType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_layer_norm</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementwise_transform_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">mi_module_zoo.settransformer.ElementwiseTransformType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/settransformer.html#ISAB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.settransformer.ISAB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inducing-point self attention block. This reduces memory use and compute time from <span class="math notranslate nohighlight">\(O(N^2)\)</span> to <span class="math notranslate nohighlight">\(O(NM)\)</span>
+where <span class="math notranslate nohighlight">\(N\)</span> is the number of features and <span class="math notranslate nohighlight">\(M\)</span> is the number of inducing points.</p>
+<p>Reference: <a class="reference external" href="https://arxiv.org/pdf/1810.00825.pdf">https://arxiv.org/pdf/1810.00825.pdf</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding_dim</strong> – Dimension of the input data.</p></li>
+<li><p><strong>num_heads</strong> – Number of heads.</p></li>
+<li><p><strong>num_inducing_points</strong> – Number of inducing points.</p></li>
+<li><p><strong>multihead_init_type</strong> – How linear layers in nn.MultiheadAttention are initialised.</p></li>
+<li><p><strong>use_layer_norm</strong> – Whether layer normalisation should be used in MAB blocks.</p></li>
+<li><p><strong>elementwise_transform_type</strong> – What version of the elementwise transform (rFF) should be used.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.ISAB.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../_modules/mi_module_zoo/settransformer.html#ISAB.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.settransformer.ISAB.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">set_size,</span> <span class="pre">embedding_dim]</span></code> to be used as query, key and value.</p></li>
+<li><p><strong>mask</strong> – Mask tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">set_size]</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code> values are masked.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all elements are used is used. The mask enforces that only the selected
+values are attended to in multihead attention, but the output is generated for all
+elements of x.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Attention output tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">set_size,</span> <span class="pre">embedding_dim]</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.PMA">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mi_module_zoo.settransformer.</span></span><span class="sig-name descname"><span class="pre">PMA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embedding_dim</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_seed_vectors</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multihead_init_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#mi_module_zoo.settransformer.MultiheadInitType" title="mi_module_zoo.settransformer.MultiheadInitType"><span class="pre">mi_module_zoo.settransformer.MultiheadInitType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_layer_norm</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementwise_transform_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">mi_module_zoo.settransformer.ElementwiseTransformType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_elementwise_transform_pma</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/settransformer.html#PMA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.settransformer.PMA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pooling by Multihead Attention block of the Set Transformer model.
+Seed vectors attend to the given values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>embedding_dim</strong> – Dimension of the input data.</p></li>
+<li><p><strong>num_heads</strong> – Number of heads.</p></li>
+<li><p><strong>num_seed_vectors</strong> – Number of seed vectors.</p></li>
+<li><p><strong>multihead_init_type</strong> – How linear layers in nn.MultiheadAttention are initialised.</p></li>
+<li><p><strong>use_layer_norm</strong> – Whether layer normalisation should be used in MAB blocks.</p></li>
+<li><p><strong>elementwise_transform_type</strong> – What version of the elementwise transform (rFF) should be used.</p></li>
+<li><p><strong>use_elementwise_transform_pma</strong> – Whether an elementwise transform (rFF) should be used in the PMA block.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.PMA.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">torch.Tensor</span></span></span><a class="reference internal" href="../_modules/mi_module_zoo/settransformer.html#PMA.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.settransformer.PMA.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">set_size,</span> <span class="pre">embedding_dim]</span></code> to be used as key and value.</p></li>
+<li><p><strong>mask</strong> – Mask tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">set_size]</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code> for masked elements.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, everything is observed. The mask enforces that only the selected values are
+attended to in multihead attention.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Attention output tensor with shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">num_seed_vectors,</span> <span class="pre">embedding_dim]</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.MultiheadInitType">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mi_module_zoo.settransformer.</span></span><span class="sig-name descname"><span class="pre">MultiheadInitType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/settransformer.html#MultiheadInitType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.settransformer.MultiheadInitType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization type for multihead attetion.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.MultiheadInitType.KAIMING">
+<span class="sig-name descname"><span class="pre">KAIMING</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#mi_module_zoo.settransformer.MultiheadInitType.KAIMING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mi_module_zoo.settransformer.MultiheadInitType.XAVIER">
+<span class="sig-name descname"><span class="pre">XAVIER</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#mi_module_zoo.settransformer.MultiheadInitType.XAVIER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Microsoft Research and contributors.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

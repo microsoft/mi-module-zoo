@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Relational Multi-Head Attention &#8212; mi-module-zoo  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Set Transformers" href="settransformers.html" />
+    <link rel="prev" title="Relational Transformer Encoder/Decoder Layers" href="relationaltransformer.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          mi-module-zoo</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="relationaltransformer.html">Relational Transformer Encoder/Decoder Layers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Relational Multi-Head Attention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settransformers.html">Set Transformers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Relational Multi-Head Attention</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="relationaltransformer.html" title="Previous Chapter: Relational Transformer Encoder/Decoder Layers"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Relational Tr...</span>
+    </a>
+  </li>
+  <li>
+    <a href="settransformers.html" title="Next Chapter: Set Transformers"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Set Transformers &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/modules/relationalmha.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="relational-multi-head-attention">
+<h1>Relational Multi-Head Attention<a class="headerlink" href="#relational-multi-head-attention" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">mi_module_zoo.relationalmultiheadattention</span></code> contains implementations of
+transformer-based models that process sets.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mi_module_zoo.relationalmultiheadattention.RelationalMultiheadAttention">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mi_module_zoo.relationalmultiheadattention.</span></span><span class="sig-name descname"><span class="pre">RelationalMultiheadAttention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_edge_types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_query_dimension</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_dimension</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dimension</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_edge_value_biases</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_attention_bias_is_scalar</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/relationalmultiheadattention.html#RelationalMultiheadAttention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.relationalmultiheadattention.RelationalMultiheadAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>A relational multihead implementation supporting two variations of using additional
+relationship (sparse) information between input elements:</p>
+<ul>
+<li><p>Sparse relations (edges):</p>
+<ul>
+<li><p>If edges are present and <code class="docutils literal notranslate"><span class="pre">edge_attention_bias_is_scalar=False</span></code>,``
+and <code class="docutils literal notranslate"><span class="pre">use_edge_value_biases=True</span></code> is set, this implements
+Eqs. (3) and (4) of
+Shaw, Peter, Jakob Uszkoreit, and Ashish Vaswani. “Self-attention with relative position representations.”
+In ACL 2018.  <a class="reference external" href="https://www.aclweb.org/anthology/N18-2074/">https://www.aclweb.org/anthology/N18-2074/</a></p>
+<p>and
+Eq. (2) of
+Wang, Bailin, et al. “RAT-SQL: Relation-aware schema encoding and linking for text-to-SQL parsers.”
+In ICML 2020.  <a class="reference external" href="https://arxiv.org/pdf/1911.04942.pdf">https://arxiv.org/pdf/1911.04942.pdf</a></p>
+</li>
+<li><p>If edges are present and <code class="docutils literal notranslate"><span class="pre">edge_attention_bias_is_scalar=True</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">use_edge_value_biases=False</span></code> is set, this implements Sect. 3.1 of
+Hellendoorn, Vincent J., et al. “Global relational modules of source code.”
+In ICLR 2020. <a class="reference external" href="https://openreview.net/pdf?id=B1lnbRNtwr">https://openreview.net/pdf?id=B1lnbRNtwr</a></p></li>
+</ul>
+</li>
+<li><p>Dense relations, when all input elements have a relationship information
+to all other elements in the input. This can be encoded in one or both of the
+following two ways:</p>
+<ul class="simple">
+<li><p>Passing a dense <code class="docutils literal notranslate"><span class="pre">dense_relations_kq</span></code> of shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">query_len,</span> <span class="pre">key_len,</span> <span class="pre">num_heads]</span></code>
+in <code class="docutils literal notranslate"><span class="pre">forward()</span></code> for every pair of query-key.</p></li>
+<li><p>Passing a dense <code class="docutils literal notranslate"><span class="pre">dense_relations_kv</span></code> of shape <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">query_len,</span> <span class="pre">key_len,</span> <span class="pre">num_heads,</span> <span class="pre">value_dimension]</span></code>
+in <code class="docutils literal notranslate"><span class="pre">forward()</span></code> for every pair of query-key.</p></li>
+</ul>
+</li>
+<li><p>If no edges are present and no dense relations are passed then
+this acts as a standard multihead attention layer.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_heads</strong> – the number of attention heads.</p></li>
+<li><p><strong>num_edge_types</strong> – the number of discrete edge types.</p></li>
+<li><p><strong>key_query_dimension</strong> – the dimensionality of keys and queries (per head).</p></li>
+<li><p><strong>value_dimension</strong> – the dimension of the values (per head).</p></li>
+<li><p><strong>output_dimension</strong> – the output dimension (after the feedforward).</p></li>
+<li><p><strong>dropout_rate</strong> – the rate of dropout in <span class="math notranslate nohighlight">\([0, 1)\)</span>.</p></li>
+<li><p><strong>use_edge_value_biases</strong> – should the edges (relations) use value biases?</p></li>
+<li><p><strong>edge_attention_bias_is_scalar</strong> – Should edge_attention_biases be a scalar or
+of size <code class="docutils literal notranslate"><span class="pre">key_query_dimension</span></code>?</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mi_module_zoo.relationalmultiheadattention.RelationalMultiheadAttention.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queries</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masked_elements</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_relations_kq</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_relations_kv</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/relationalmultiheadattention.html#RelationalMultiheadAttention.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.relationalmultiheadattention.RelationalMultiheadAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queries</strong> – <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">query_len,</span> <span class="pre">D]</span></code></p></li>
+<li><p><strong>keys</strong> – <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">key_len,</span> <span class="pre">D]</span></code></p></li>
+<li><p><strong>values</strong> – <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">key_len,</span> <span class="pre">H]</span></code></p></li>
+<li><p><strong>masked_elements</strong> – <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">key_len]</span></code>  <code class="docutils literal notranslate"><span class="pre">True</span></code> values are those
+that should be masked (no attention paid). <code class="docutils literal notranslate"><span class="pre">None</span></code> keeps everything unmasked.</p></li>
+<li><p><strong>edges</strong> – <code class="docutils literal notranslate"><span class="pre">[num_edges,</span> <span class="pre">3]</span></code> each row has the form <code class="docutils literal notranslate"><span class="pre">(batch_idx,</span> <span class="pre">source_idx,</span> <span class="pre">target_idx)</span></code></p></li>
+<li><p><strong>edge_types</strong> – <code class="docutils literal notranslate"><span class="pre">[num_edges]</span></code> of integers from <code class="docutils literal notranslate"><span class="pre">0..num_edge_types</span></code></p></li>
+<li><p><strong>dense_relations_kq</strong> – Optional <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">query_len,</span> <span class="pre">key_len,</span> <span class="pre">num_heads]</span></code></p></li>
+<li><p><strong>dense_relations_kv</strong> – Optional <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">query_len,</span> <span class="pre">key_len,</span> <span class="pre">num_heads,</span> <span class="pre">value_dimension]</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_size,</span> <span class="pre">H]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Microsoft Research and contributors.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

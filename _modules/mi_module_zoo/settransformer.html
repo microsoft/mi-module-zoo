@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mi_module_zoo.settransformer &#8212; mi-module-zoo  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js "></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          mi-module-zoo</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/relationaltransformer.html">Relational Transformer Encoder/Decoder Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/relationalmha.html">Relational Multi-Head Attention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/settransformers.html">Set Transformers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules/utils.html">Utilities</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <h1>Source code for mi_module_zoo.settransformer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MultiheadInitType&quot;</span><span class="p">,</span> <span class="s2">&quot;ElementwiseTransformType&quot;</span><span class="p">,</span> <span class="s2">&quot;SetTransformer&quot;</span><span class="p">,</span> <span class="s2">&quot;ISAB&quot;</span><span class="p">,</span> <span class="s2">&quot;PMA&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="MultiheadInitType"><a class="viewcode-back" href="../../modules/settransformers.html#mi_module_zoo.settransformer.MultiheadInitType">[docs]</a><span class="k">class</span> <span class="nc">MultiheadInitType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Initialization type for multihead attetion.&quot;&quot;&quot;</span>
+
+    <span class="n">XAVIER</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">KAIMING</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<span class="k">class</span> <span class="nc">ElementwiseTransformType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">SINGLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">DOUBLE</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<span class="k">def</span> <span class="nf">_initialise_multihead</span><span class="p">(</span>
+    <span class="n">multihead</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">MultiheadAttention</span><span class="p">,</span> <span class="n">multihead_init_type</span><span class="p">:</span> <span class="n">MultiheadInitType</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">multihead_init_type</span> <span class="o">==</span> <span class="n">MultiheadInitType</span><span class="o">.</span><span class="n">XAVIER</span><span class="p">:</span>  <span class="c1"># AIAYN and nn.MultiheadAttention default</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">in_proj_weight</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">in_proj_bias</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_uniform_</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">out_proj</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">constant_</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">out_proj</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">multihead_init_type</span> <span class="o">==</span> <span class="n">MultiheadInitType</span><span class="o">.</span><span class="n">KAIMING</span><span class="p">:</span>
+        <span class="c1"># ST Implementation (nn.Linear) default</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_uniform_</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">in_proj_weight</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+        <span class="n">in_proj_fan_in</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">_calculate_fan_in_and_fan_out</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">in_proj_weight</span><span class="p">)</span>
+        <span class="n">in_proj_bound</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">in_proj_fan_in</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">in_proj_bias</span><span class="p">,</span> <span class="o">-</span><span class="n">in_proj_bound</span><span class="p">,</span> <span class="n">in_proj_bound</span><span class="p">)</span>
+
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">kaiming_uniform_</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">out_proj</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+        <span class="n">out_proj_fan_in</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">_calculate_fan_in_and_fan_out</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">out_proj</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">out_proj_bound</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">out_proj_fan_in</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="n">multihead</span><span class="o">.</span><span class="n">out_proj</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="o">-</span><span class="n">out_proj_bound</span><span class="p">,</span> <span class="n">out_proj_bound</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized init type `</span><span class="si">{</span><span class="n">multihead_init_type</span><span class="si">}</span><span class="s2">`.&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_create_elementwise_transform</span><span class="p">(</span>
+    <span class="n">embedding_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">elementwise_transform_type</span><span class="p">:</span> <span class="n">ElementwiseTransformType</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">elementwise_transform_type</span> <span class="o">==</span> <span class="n">ElementwiseTransformType</span><span class="o">.</span><span class="n">SINGLE</span><span class="p">:</span>  <span class="c1"># ST Implementation default</span>
+        <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+        <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">elementwise_transform_type</span> <span class="o">==</span> <span class="n">ElementwiseTransformType</span><span class="o">.</span><span class="n">DOUBLE</span><span class="p">:</span>
+        <span class="c1"># AIAYN Implementation default</span>
+        <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">),</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized elementwise transform type `</span><span class="si">{</span><span class="n">elementwise_transform_type</span><span class="si">}</span><span class="s2">`.&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SetTransformer"><a class="viewcode-back" href="../../modules/settransformers.html#mi_module_zoo.settransformer.SetTransformer">[docs]</a><span class="k">class</span> <span class="nc">SetTransformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Set Transformer model https://arxiv.org/abs/1810.00825</span>
+
+<span class="sd">    Generates an embedding from a set of features using several blocks of self attention</span>
+<span class="sd">    and pooling by attention.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">            input_embedding_dim: Dimension of the input data, the embedded features.</span>
+<span class="sd">            set_embedding_dim: Dimension of the output data, the set embedding.</span>
+<span class="sd">            transformer_embedding_dim: Embedding dimension to be used in the set transformer blocks.</span>
+<span class="sd">            num_heads: Number of heads in each multi-head attention block.</span>
+<span class="sd">            num_blocks: Number of SABs in the model.</span>
+<span class="sd">            num_seed_vectors: Number of seed vectors used in the pooling block (PMA).</span>
+<span class="sd">            use_isab: Should ISAB blocks be used instead of SAB blocks.</span>
+<span class="sd">            num_inducing_points: Number of inducing points.</span>
+<span class="sd">            multihead_init_type: How linear layers in nn.MultiheadAttention are initialised. Valid options are &quot;xavier&quot; and &quot;kaiming&quot;.</span>
+<span class="sd">            use_layer_norm: Whether layer normalisation should be used in MAB blocks.</span>
+<span class="sd">            elementwise_transform_type: What version of the elementwise transform (rFF) should be used. Valid options are &quot;single&quot; and &quot;double&quot;.</span>
+<span class="sd">            use_elementwise_transform_pma: Whether an elementwise transform (rFF) should be used in the PMA block.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">input_embedding_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">set_embedding_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">transformer_embedding_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">num_blocks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">num_seed_vectors</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">use_isab</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">num_inducing_points</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">multihead_init_type</span><span class="p">:</span> <span class="n">MultiheadInitType</span> <span class="o">=</span> <span class="n">MultiheadInitType</span><span class="o">.</span><span class="n">XAVIER</span><span class="p">,</span>
+        <span class="n">use_layer_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">elementwise_transform_type</span><span class="p">:</span> <span class="n">ElementwiseTransformType</span> <span class="o">=</span> <span class="n">ElementwiseTransformType</span><span class="o">.</span><span class="n">SINGLE</span><span class="p">,</span>
+        <span class="n">use_elementwise_transform_pma</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">dropout_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transform_input_dimension</span> <span class="o">=</span> <span class="n">transformer_embedding_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">transformer_embedding_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">transformer_embedding_dim</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">transformer_embedding_dim</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">input_embedding_dim</span> <span class="o">!=</span> <span class="n">transformer_embedding_dim</span>
+            <span class="p">),</span> <span class="s2">&quot;The linear transformation seems unnecessary since input_embedding_dim == transformer_embedding_dim&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_input_dimension_transform</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+                <span class="n">input_embedding_dim</span><span class="p">,</span> <span class="n">transformer_embedding_dim</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">transformer_embedding_dim</span> <span class="o">=</span> <span class="n">input_embedding_dim</span>
+
+        <span class="k">if</span> <span class="n">use_isab</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">num_inducing_points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of inducing points must be defined to use ISAB&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sabs</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">ISAB</span><span class="p">(</span>
+                        <span class="n">embedding_dim</span><span class="o">=</span><span class="n">transformer_embedding_dim</span><span class="p">,</span>
+                        <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+                        <span class="n">num_inducing_points</span><span class="o">=</span><span class="n">num_inducing_points</span><span class="p">,</span>
+                        <span class="n">multihead_init_type</span><span class="o">=</span><span class="n">multihead_init_type</span><span class="p">,</span>
+                        <span class="n">use_layer_norm</span><span class="o">=</span><span class="n">use_layer_norm</span><span class="p">,</span>
+                        <span class="n">elementwise_transform_type</span><span class="o">=</span><span class="n">elementwise_transform_type</span><span class="p">,</span>
+                        <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_blocks</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sabs</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">SAB</span><span class="p">(</span>
+                        <span class="n">embedding_dim</span><span class="o">=</span><span class="n">transformer_embedding_dim</span><span class="p">,</span>
+                        <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+                        <span class="n">multihead_init_type</span><span class="o">=</span><span class="n">multihead_init_type</span><span class="p">,</span>
+                        <span class="n">use_layer_norm</span><span class="o">=</span><span class="n">use_layer_norm</span><span class="p">,</span>
+                        <span class="n">elementwise_transform_type</span><span class="o">=</span><span class="n">elementwise_transform_type</span><span class="p">,</span>
+                        <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_blocks</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pma</span> <span class="o">=</span> <span class="n">PMA</span><span class="p">(</span>
+            <span class="n">embedding_dim</span><span class="o">=</span><span class="n">transformer_embedding_dim</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">num_seed_vectors</span><span class="o">=</span><span class="n">num_seed_vectors</span><span class="p">,</span>
+            <span class="n">multihead_init_type</span><span class="o">=</span><span class="n">multihead_init_type</span><span class="p">,</span>
+            <span class="n">use_layer_norm</span><span class="o">=</span><span class="n">use_layer_norm</span><span class="p">,</span>
+            <span class="n">elementwise_transform_type</span><span class="o">=</span><span class="n">elementwise_transform_type</span><span class="p">,</span>
+            <span class="n">use_elementwise_transform_pma</span><span class="o">=</span><span class="n">use_elementwise_transform_pma</span><span class="p">,</span>
+            <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_dimension_transform</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+            <span class="n">transformer_embedding_dim</span> <span class="o">*</span> <span class="n">num_seed_vectors</span><span class="p">,</span> <span class="n">set_embedding_dim</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="SetTransformer.forward"><a class="viewcode-back" href="../../modules/settransformers.html#mi_module_zoo.settransformer.SetTransformer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            x: Embedded features tensor with shape ``[batch_size, set_size, input_embedding_dim]``.</span>
+<span class="sd">            mask: Mask tensor with shape ``[batch_size, set_size]``, ``True`` values are masked</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Set embedding tensor with shape ``[batch_size, set_embedding_dim]``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform_input_dimension</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_dimension_transform</span><span class="p">(</span>
+                <span class="n">x</span>
+            <span class="p">)</span>  <span class="c1"># Shape (batch_size, set_size, transformer_embedding_dim)</span>
+        <span class="k">for</span> <span class="n">sab</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sabs</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">sab</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>  <span class="c1"># Shape (batch_size, set_size, transformer_embedding_dim)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pma</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>  <span class="c1"># Shape (batch_size, num_seed_vectors, transformer_embedding_dim)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>  <span class="c1"># Shape (batch_size, num_seed_vectors * transformer_embedding_dim)</span>
+        <span class="n">set_embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_dimension_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Shape (batch_size, set_embedding_dim)</span>
+
+        <span class="k">return</span> <span class="n">set_embedding</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">MAB</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">embedding_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">multihead_init_type</span><span class="p">:</span> <span class="n">MultiheadInitType</span><span class="p">,</span>
+        <span class="n">use_layer_norm</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">elementwise_transform_type</span><span class="p">:</span> <span class="n">ElementwiseTransformType</span><span class="p">,</span>
+        <span class="n">dropout_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multihead Attention Block of the Set Transformer model.</span>
+
+<span class="sd">        :param embedding_dim: Dimension of the input data.</span>
+<span class="sd">        :param num_heads: Number of heads.</span>
+<span class="sd">        :param multihead_init_type: How linear layers in nn.MultiheadAttention are initialised.</span>
+<span class="sd">        :param use_layer_norm: Whether layer normalisation should be used in MAB blocks.</span>
+<span class="sd">        :param elementwise_transform_type: Elementwise transform (rFF) type used.</span>
+<span class="sd">        :param dropout_rate: the percent of elements to dropout.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multihead</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MultiheadAttention</span><span class="p">(</span>
+            <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">_initialise_multihead</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_multihead</span><span class="p">,</span> <span class="n">multihead_init_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_layer_norm</span> <span class="o">=</span> <span class="n">use_layer_norm</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_layer_norm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layer_norm_1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layer_norm_2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_transform</span> <span class="o">=</span> <span class="n">_create_elementwise_transform</span><span class="p">(</span>
+            <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">elementwise_transform_type</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">key_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A multi-head attention block with keys==values. See Equation 6 of the Set Transformers paper.</span>
+
+<span class="sd">        :param query: Query tensor with shape [batch_size, query_set_size, embedding_dim]</span>
+<span class="sd">        :param key: Input tensor with shape [batch_size, key_set_size, embedding_dim] to be used as key and value.</span>
+<span class="sd">        :param key_mask: Boolean mask tensor with shape [batch_size, key_set_size]. True values are masked.</span>
+<span class="sd">                If None, nothing is masked.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            output: Tensor with shape [batch_size, query_set_size, embedding_dim].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">query</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multihead</span><span class="p">(</span>
+                <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">key_padding_mask</span><span class="o">=</span><span class="n">key_mask</span><span class="p">,</span> <span class="n">need_weights</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_layer_norm</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_norm_1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_layer_norm</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer_norm_2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">class</span> <span class="nc">SAB</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">embedding_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">multihead_init_type</span><span class="p">:</span> <span class="n">MultiheadInitType</span><span class="p">,</span>
+        <span class="n">use_layer_norm</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">elementwise_transform_type</span><span class="p">:</span> <span class="n">ElementwiseTransformType</span><span class="p">,</span>
+        <span class="n">dropout_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Self Attention Block of the Set Transformer model.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">        :param embedding_dim: Dimension of the input data.</span>
+<span class="sd">        :param num_heads: Number of heads.</span>
+<span class="sd">        :param multihead_init_type: How linear layers in nn.MultiheadAttention are initialised.</span>
+<span class="sd">        :param use_layer_norm: Whether layer normalisation should be used in SAB blocks.</span>
+<span class="sd">        :param elementwise_transform_type: Elementwise transform (rFF) type used.</span>
+<span class="sd">        :param dropout_rate: the dropout rate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mab</span> <span class="o">=</span> <span class="n">MAB</span><span class="p">(</span>
+            <span class="n">embedding_dim</span><span class="o">=</span><span class="n">embedding_dim</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">multihead_init_type</span><span class="o">=</span><span class="n">multihead_init_type</span><span class="p">,</span>
+            <span class="n">use_layer_norm</span><span class="o">=</span><span class="n">use_layer_norm</span><span class="p">,</span>
+            <span class="n">elementwise_transform_type</span><span class="o">=</span><span class="n">elementwise_transform_type</span><span class="p">,</span>
+            <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param x: Input tensor with shape ``[batch_size, set_size, embedding_dim]`` to be used as query, key, and value.</span>
+<span class="sd">        :param mask: Boolean mask tensor with shape ``[batch_size, set_size]``, True values are masked.</span>
+<span class="sd">                If None, everything is observed.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            output: Tensor with shape ``[batch_size, set_size, embedding_dim]``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mab</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PMA"><a class="viewcode-back" href="../../modules/settransformers.html#mi_module_zoo.settransformer.PMA">[docs]</a><span class="k">class</span> <span class="nc">PMA</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pooling by Multihead Attention block of the Set Transformer model.</span>
+<span class="sd">    Seed vectors attend to the given values.</span>
+
+<span class="sd">    :param embedding_dim: Dimension of the input data.</span>
+<span class="sd">    :param num_heads: Number of heads.</span>
+<span class="sd">    :param num_seed_vectors: Number of seed vectors.</span>
+<span class="sd">    :param multihead_init_type: How linear layers in nn.MultiheadAttention are initialised.</span>
+<span class="sd">    :param use_layer_norm: Whether layer normalisation should be used in MAB blocks.</span>
+<span class="sd">    :param elementwise_transform_type: What version of the elementwise transform (rFF) should be used.</span>
+<span class="sd">    :param use_elementwise_transform_pma: Whether an elementwise transform (rFF) should be used in the PMA block.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">embedding_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_seed_vectors</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">multihead_init_type</span><span class="p">:</span> <span class="n">MultiheadInitType</span><span class="p">,</span>
+        <span class="n">use_layer_norm</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">elementwise_transform_type</span><span class="p">:</span> <span class="n">ElementwiseTransformType</span><span class="p">,</span>
+        <span class="n">use_elementwise_transform_pma</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">dropout_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mab</span> <span class="o">=</span> <span class="n">MAB</span><span class="p">(</span>
+            <span class="n">embedding_dim</span><span class="o">=</span><span class="n">embedding_dim</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">multihead_init_type</span><span class="o">=</span><span class="n">multihead_init_type</span><span class="p">,</span>
+            <span class="n">use_layer_norm</span><span class="o">=</span><span class="n">use_layer_norm</span><span class="p">,</span>
+            <span class="n">elementwise_transform_type</span><span class="o">=</span><span class="n">elementwise_transform_type</span><span class="p">,</span>
+            <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_seed_vectors</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_seed_vectors</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seed_vectors</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">use_elementwise_transform_pma</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_transform</span> <span class="o">=</span> <span class="n">_create_elementwise_transform</span><span class="p">(</span>
+                <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">elementwise_transform_type</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_transform</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="PMA.forward"><a class="viewcode-back" href="../../modules/settransformers.html#mi_module_zoo.settransformer.PMA.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            x: Input tensor with shape ``[batch_size, set_size, embedding_dim]`` to be used as key and value.</span>
+<span class="sd">            mask: Mask tensor with shape ``[batch_size, set_size]``, ``True`` for masked elements.</span>
+<span class="sd">                If ``None``, everything is observed. The mask enforces that only the selected values are</span>
+<span class="sd">                attended to in multihead attention.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Attention output tensor with shape ``[batch_size, num_seed_vectors, embedding_dim]``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_transform</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_transform</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">seed_vectors_repeated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_seed_vectors</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mab</span><span class="p">(</span><span class="n">seed_vectors_repeated</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output</span></div></div>
+
+
+<div class="viewcode-block" id="ISAB"><a class="viewcode-back" href="../../modules/settransformers.html#mi_module_zoo.settransformer.ISAB">[docs]</a><span class="k">class</span> <span class="nc">ISAB</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inducing-point self attention block. This reduces memory use and compute time from :math:`O(N^2)` to :math:`O(NM)`</span>
+<span class="sd">    where :math:`N` is the number of features and :math:`M` is the number of inducing points.</span>
+
+<span class="sd">    Reference: https://arxiv.org/pdf/1810.00825.pdf</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        embedding_dim: Dimension of the input data.</span>
+<span class="sd">        num_heads: Number of heads.</span>
+<span class="sd">        num_inducing_points: Number of inducing points.</span>
+<span class="sd">        multihead_init_type: How linear layers in nn.MultiheadAttention are initialised.</span>
+<span class="sd">        use_layer_norm: Whether layer normalisation should be used in MAB blocks.</span>
+<span class="sd">        elementwise_transform_type: What version of the elementwise transform (rFF) should be used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">embedding_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_heads</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_inducing_points</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">multihead_init_type</span><span class="p">:</span> <span class="n">MultiheadInitType</span><span class="p">,</span>
+        <span class="n">use_layer_norm</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">elementwise_transform_type</span><span class="p">:</span> <span class="n">ElementwiseTransformType</span><span class="p">,</span>
+        <span class="n">dropout_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mab1</span> <span class="o">=</span> <span class="n">MAB</span><span class="p">(</span>
+            <span class="n">embedding_dim</span><span class="o">=</span><span class="n">embedding_dim</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">multihead_init_type</span><span class="o">=</span><span class="n">multihead_init_type</span><span class="p">,</span>
+            <span class="n">use_layer_norm</span><span class="o">=</span><span class="n">use_layer_norm</span><span class="p">,</span>
+            <span class="n">elementwise_transform_type</span><span class="o">=</span><span class="n">elementwise_transform_type</span><span class="p">,</span>
+            <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mab2</span> <span class="o">=</span> <span class="n">MAB</span><span class="p">(</span>
+            <span class="n">embedding_dim</span><span class="o">=</span><span class="n">embedding_dim</span><span class="p">,</span>
+            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_heads</span><span class="p">,</span>
+            <span class="n">multihead_init_type</span><span class="o">=</span><span class="n">multihead_init_type</span><span class="p">,</span>
+            <span class="n">use_layer_norm</span><span class="o">=</span><span class="n">use_layer_norm</span><span class="p">,</span>
+            <span class="n">elementwise_transform_type</span><span class="o">=</span><span class="n">elementwise_transform_type</span><span class="p">,</span>
+            <span class="n">dropout_rate</span><span class="o">=</span><span class="n">dropout_rate</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inducing_points</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_inducing_points</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inducing_points</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ISAB.forward"><a class="viewcode-back" href="../../modules/settransformers.html#mi_module_zoo.settransformer.ISAB.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            x: Input tensor with shape ``[batch_size, set_size, embedding_dim]`` to be used as query, key and value.</span>
+<span class="sd">            mask: Mask tensor with shape ``[batch_size, set_size]``, ``True`` values are masked.</span>
+<span class="sd">                If ``None``, all elements are used is used. The mask enforces that only the selected</span>
+<span class="sd">                values are attended to in multihead attention, but the output is generated for all</span>
+<span class="sd">                elements of x.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Attention output tensor with shape ``[batch_size, set_size, embedding_dim]``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_size</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">inducing_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inducing_points</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span>
+            <span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="p">)</span>  <span class="c1"># [batch_size, num_inducing_points, embedding_dim]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mab1</span><span class="p">(</span>
+            <span class="n">query</span><span class="o">=</span><span class="n">inducing_points</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">key_mask</span><span class="o">=</span><span class="n">mask</span>
+        <span class="p">)</span>  <span class="c1">#  [batch_size, num_inducing_points, embedding_dim]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mab2</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>  <span class="c1"># [batch_size, set_size, embedding_dim]</span></div></div>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Microsoft Research and contributors.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

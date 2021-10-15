@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Relational Transformer Encoder/Decoder Layers &#8212; mi-module-zoo  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Relational Multi-Head Attention" href="relationalmha.html" />
+    <link rel="prev" title="mi-module-zoo" href="../index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          mi-module-zoo</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Relational Transformer Encoder/Decoder Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relationalmha.html">Relational Multi-Head Attention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settransformers.html">Set Transformers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Relational Transformer Encoder/Decoder Layers</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="../index.html" title="Previous Chapter: mi-module-zoo"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; mi-module-zoo</span>
+    </a>
+  </li>
+  <li>
+    <a href="relationalmha.html" title="Next Chapter: Relational Multi-Head Attention"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Relational Mu... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/modules/relationaltransformer.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <section id="relational-transformer-encoder-decoder-layers">
+<h1>Relational Transformer Encoder/Decoder Layers<a class="headerlink" href="#relational-transformer-encoder-decoder-layers" title="Permalink to this headline">¶</a></h1>
+<p>This contains the relational encoder and decoder layers with sparse/dense relations among inputs.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mi_module_zoo.relationaltransformerlayers.RelationalTransformerEncoderLayer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mi_module_zoo.relationaltransformerlayers.</span></span><span class="sig-name descname"><span class="pre">RelationalTransformerEncoderLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_model</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_query_dimension</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_dimension</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_edge_types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_reverse_edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_feedforward</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2048</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'relu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_edge_value_biases</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_attention_bias_is_scalar</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rezero_mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="pre">'off'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'scalar'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'vector'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'scalar-tied'</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'off'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalisation_mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="pre">'off'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'prenorm'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'postnorm'</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'postnorm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/relationaltransformerlayers.html#RelationalTransformerEncoderLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.relationaltransformerlayers.RelationalTransformerEncoderLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A relational transformer encoder layer. That supports both discrete/sparse edge types
+and dense (all-to-all) relations, different ReZero modes, and different normalization
+modes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_model</strong> – the dimensionality of the inputs/ouputs of the transformer layer.</p></li>
+<li><p><strong>key_query_dimension</strong> – the dimensionality of key/queries in the multihead attention.</p></li>
+<li><p><strong>value_dimension</strong> – the dimensionality of the multihead attention values,</p></li>
+<li><p><strong>num_heads</strong> – the number of attention heads,</p></li>
+<li><p><strong>num_edge_types</strong> – the number of discrete edge types. If <code class="docutils literal notranslate"><span class="pre">0</span></code>, no discrete edge types
+are to be used.</p></li>
+<li><p><strong>add_reverse_edges</strong> – if <code class="docutils literal notranslate"><span class="pre">num_edge_types&gt;0</span></code> should reverse edge types be introduced?</p></li>
+<li><p><strong>dim_feedforward</strong> – the dimensionality of the feedforward hidden layer in the transformer layer.</p></li>
+<li><p><strong>dropout_rate</strong> – the dropout rate in <span class="math notranslate nohighlight">\([0, 1)\)</span>,</p></li>
+<li><p><strong>activation</strong> – the activation function to be used in the feedforward layer. Defaults to ReLU.</p></li>
+<li><p><strong>use_edge_value_biases</strong> – should the discrete edges (relations) use value biases?</p></li>
+<li><p><strong>edge_attention_bias_is_scalar</strong> – should <code class="docutils literal notranslate"><span class="pre">edge_attention_biases</span></code> be a scalar or
+of size <code class="docutils literal notranslate"><span class="pre">key_query_dimension</span></code>?</p></li>
+<li><p><strong>rezero_mode</strong> – <p>Three different modes are supported</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;off&quot;</span></code>: No ReZero use.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;scalar&quot;</span></code>: Sublayers (attention / fully connected) are scaled by a single scalar, i.e.,
+<code class="docutils literal notranslate"><span class="pre">alpha</span></code> is a scalar in the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="s1">&#39; = x + alpha * SelfAtt(x)</span>
+<span class="n">x</span><span class="s1">&#39;&#39;</span> <span class="o">=</span> <span class="n">x</span><span class="s1">&#39; + alpha * Boom(x&#39;</span><span class="p">)</span>
+<span class="k">return</span> <span class="n">x</span><span class="s1">&#39;&#39;</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://arxiv.org/pdf/2003.04887.pdf">https://arxiv.org/pdf/2003.04887.pdf</a>.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;vector&quot;</span></code>: Sublayers (attention / fully connected) are scaled by one value per dim, i.e.,
+<code class="docutils literal notranslate"><span class="pre">alpha</span></code> is a vector in the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="s1">&#39; = x + alpha * SelfAtt(x)</span>
+<span class="n">x</span><span class="s1">&#39;&#39;</span> <span class="o">=</span> <span class="n">x</span><span class="s1">&#39; + alpha * Boom(x&#39;</span><span class="p">)</span>
+<span class="k">return</span> <span class="n">x</span><span class="s1">&#39;&#39;</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://arxiv.org/pdf/2103.17239.pdf">https://arxiv.org/pdf/2103.17239.pdf</a>.</p>
+</li>
+</ul>
+</p></li>
+<li><p><strong>normalisation_mode</strong> – <p>Three different modes are supported:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;off&quot;</span></code>: use no layer norm at all. Likely to diverge without using ReZero as well.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;prenorm&quot;</span></code>: Normalise values before each sublayer (attention / fully connected):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="s1">&#39; = x + SelfAtt(LN(x))</span>
+<span class="n">x</span><span class="s1">&#39;&#39;</span> <span class="o">=</span> <span class="n">x</span><span class="s1">&#39; + Boom(LN(x&#39;</span><span class="p">))</span>
+<span class="k">return</span> <span class="n">x</span><span class="s1">&#39;&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;postnorm&quot;</span></code>: Normalise values after each sublayer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="s1">&#39; = LN(x + SelfAtt(x))</span>
+<span class="n">x</span><span class="s1">&#39;&#39;</span> <span class="o">=</span> <span class="n">LN</span><span class="p">(</span><span class="n">x</span><span class="s1">&#39; + Boom(x))</span>
+<span class="k">return</span> <span class="n">x</span><span class="s1">&#39;&#39;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mi_module_zoo.relationaltransformerlayers.RelationalTransformerEncoderLayer.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_relations_kq</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_relations_kv</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_self_att_hook</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">,</span> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/relationaltransformerlayers.html#RelationalTransformerEncoderLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.relationaltransformerlayers.RelationalTransformerEncoderLayer.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src</strong> – A <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">D]</span></code> tensor.</p></li>
+<li><p><strong>src_mask</strong> – A <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len]</span></code> bool tensor.  <code class="docutils literal notranslate"><span class="pre">True</span></code> values are those
+that should be masked (no attention paid).</p></li>
+<li><p><strong>edges</strong> – <code class="docutils literal notranslate"><span class="pre">[num_edges,</span> <span class="pre">3]</span></code> each row has the form <code class="docutils literal notranslate"><span class="pre">(batch_idx,</span> <span class="pre">source_idx,</span> <span class="pre">target_idx)</span></code>
+or an empty tensor of shape <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">3)</span></code> of sparse edges are unused.</p></li>
+<li><p><strong>edge_types</strong> – <code class="docutils literal notranslate"><span class="pre">[num_edges]</span></code> of integers from <code class="docutils literal notranslate"><span class="pre">0..num_edge_types-1</span></code> or an empty tensor
+if sparse edges are unused.</p></li>
+<li><p><strong>dense_relations_kq</strong> – Optional <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">seq_len,</span> <span class="pre">num_heads]</span></code>.</p></li>
+<li><p><strong>dense_relations_kv</strong> – Optional <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">seq_len,</span> <span class="pre">num_heads,</span> <span class="pre">value_dimension]</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">D]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mi_module_zoo.relationaltransformerlayers.RelationalTransformerDecoderLayer">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mi_module_zoo.relationaltransformerlayers.</span></span><span class="sig-name descname"><span class="pre">RelationalTransformerDecoderLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d_model</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_query_dimension</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value_dimension</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_self_edge_types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_edge_types_to_encoder</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_reverse_edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_feedforward</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">2048</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout_rate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">float</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'relu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_edge_value_biases</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edge_attention_bias_is_scalar</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">bool</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rezero_mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="pre">'off'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'scalar'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'vector'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'scalar-tied'</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'off'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalisation_mode</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="pre">'off'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'prenorm'</span><span class="p"><span class="pre">,</span> </span><span class="pre">'postnorm'</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">'postnorm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/relationaltransformerlayers.html#RelationalTransformerDecoderLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.relationaltransformerlayers.RelationalTransformerDecoderLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A relational transformer decoder layer. See the <a class="reference internal" href="#mi_module_zoo.relationaltransformerlayers.RelationalTransformerEncoderLayer" title="mi_module_zoo.relationaltransformerlayers.RelationalTransformerEncoderLayer"><code class="xref py py-class docutils literal notranslate"><span class="pre">RelationalTransformerEncoderLayer</span></code></a>
+for more information.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mi_module_zoo.relationaltransformerlayers.RelationalTransformerDecoderLayer.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tgt</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tgt_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_mask</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_edge_types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder_edges</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoder_edge_types</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_self_relations_kq</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_self_relations_kv</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_encoder_relations_kq</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dense_encoder_relations_kv</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">torch.Tensor</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/mi_module_zoo/relationaltransformerlayers.html#RelationalTransformerDecoderLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#mi_module_zoo.relationaltransformerlayers.RelationalTransformerDecoderLayer.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tgt</strong> – A <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">D]</span></code> tensor.</p></li>
+<li><p><strong>memory</strong> – A <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">mem_len,</span> <span class="pre">D]</span></code> tensor.</p></li>
+<li><p><strong>tgt_mask</strong> – A <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len]</span></code> bool tensor.  <code class="docutils literal notranslate"><span class="pre">True</span></code> values are those
+that should be masked (no attention paid).</p></li>
+<li><p><strong>memory_mask</strong> – A <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">mem_len]</span></code> bool tensor.  <code class="docutils literal notranslate"><span class="pre">True</span></code> values are those
+that should be masked (no attention paid).</p></li>
+<li><p><strong>self_edges</strong> – <code class="docutils literal notranslate"><span class="pre">[num_self_edges,</span> <span class="pre">3]</span></code> each row has the form <code class="docutils literal notranslate"><span class="pre">(batch_idx,</span> <span class="pre">source_idx,</span> <span class="pre">target_idx)</span></code>
+or an empty tensor of shape <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">3)</span></code> of sparse edges are unused..</p></li>
+<li><p><strong>self_edge_types</strong> – <code class="docutils literal notranslate"><span class="pre">[num_self_edges]</span></code> of integers from <code class="docutils literal notranslate"><span class="pre">0..num_self_edges-1</span></code>.</p></li>
+<li><p><strong>encoder_edges</strong> – <code class="docutils literal notranslate"><span class="pre">[num_enc_edges,</span> <span class="pre">3]</span></code> each row has the form <code class="docutils literal notranslate"><span class="pre">(batch_idx,</span> <span class="pre">source_idx,</span> <span class="pre">target_idx)</span></code>
+or an empty tensor of shape <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">3)</span></code> of sparse edges are unused.
+Note: <code class="docutils literal notranslate"><span class="pre">target_idx</span></code> refers to elements in the memory.</p></li>
+<li><p><strong>encoder_edge_types</strong> – <code class="docutils literal notranslate"><span class="pre">[num_enc_edges]</span></code> of integers from <code class="docutils literal notranslate"><span class="pre">0..num_enc_edges-1</span></code></p></li>
+<li><p><strong>dense_self_relations_kq</strong> – Optional <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">seq_len,</span> <span class="pre">num_heads]</span></code> for the
+relationships within the decoder.</p></li>
+<li><p><strong>dense_self_relations_kv</strong> – Optional <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">seq_len,</span> <span class="pre">num_heads,</span> <span class="pre">value_dimension]</span></code>
+relationships within the decoder.</p></li>
+<li><p><strong>dense_encoder_relations_kq</strong> – Optional <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">mem_len,</span> <span class="pre">num_heads]</span></code>
+relationships between the encoded inputs and the decoder.</p></li>
+<li><p><strong>dense_encoder_relations_kv</strong> – Optional <code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">mem_len,</span> <span class="pre">num_heads,</span> <span class="pre">value_dimension]</span></code>
+relationships between the encoded inputs and the decoder.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">[batch_size,</span> <span class="pre">seq_len,</span> <span class="pre">H]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Microsoft Research and contributors.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.2.0.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
