@@ -1,11 +1,16 @@
 ## Machine Intelligence PyTorch Module Zoo  ![PyPI](https://img.shields.io/pypi/v/mi-module-zoo?style=flat-square)
 
 This package contains implementations standalone, commonly reusable PyTorch `nn.Module`s. To
-install it run `pip install mi-module-zoo`.
+install it run
+```
+pip install mi-module-zoo
+```
+
+Documentation of the library is found at https://microsoft.github.io/mi-module-zoo/.
 
 This library is maintained by the [Machine Intelligence group](https://www.microsoft.com/en-us/research/theme/machine-intelligence/) in Microsoft Research.
 
-### Modules
+## Modules
 
 A list of the modules follows, for detailed documentation, please check the docstring
 of each module.
