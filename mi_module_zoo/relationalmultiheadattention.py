@@ -124,8 +124,8 @@ class RelationalMultiheadAttention(nn.Module):
         :param queries: ``[batch_size, query_len, D]``
         :param keys: ``[batch_size, key_len, D]``
         :param values: ``[batch_size, key_len, H]``
-        :param masked_elements: ``[batch_size, key_len]``  ``True`` values are those
-            that should be masked (no attention paid). ``None`` keeps everything unmasked.
+        :param masked_elements: bool tensor of shape ``[batch_size, key_len]`` or ``[batch_size, query_len, key_len]``
+            ``True`` values are those that should be masked (no attention paid). ``None`` keeps everything unmasked.
         :param edges: ``[num_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``
         :param edge_types: ``[num_edges]`` of integers from ``0..num_edge_types``
         :param dense_relations_kq: Optional ``[batch_size, query_len, key_len, num_heads]``
@@ -163,7 +163,10 @@ class RelationalMultiheadAttention(nn.Module):
         attention_scores = attention_scores.transpose(2, 3)  # [B, query_len, num_heads, key_len]
 
         if masked_elements is not None:
-            attention_scores.masked_fill_(masked_elements.unsqueeze(1).unsqueeze(1), -math.inf)
+            if masked_elements.dim() == 2:
+                attention_scores.masked_fill_(masked_elements.unsqueeze(1).unsqueeze(1), -math.inf)
+            else:
+                attention_scores.masked_fill_(masked_elements.unsqueeze(2), -math.inf)
 
         attention_probs = torch.softmax(attention_scores, dim=-1)
         attention_probs = self._dropout_layer(attention_probs)

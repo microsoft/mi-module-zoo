@@ -177,8 +177,8 @@ class RelationalTransformerEncoderLayer(nn.Module):
     ):
         """
         :param src: A ``[batch_size, seq_len, D]`` tensor.
-        :param src_mask: A ``[batch_size, seq_len]`` bool tensor.  ``True`` values are those
-            that should be masked (no attention paid).
+        :param src_mask: A ``[batch_size, seq_len]`` or ``[batch_size, seq_len (query), seq_len (key)]`` bool tensor.
+            ``True`` values are those that should be masked (no attention paid).
         :param edges: ``[num_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``
           or an empty tensor of shape ``(0, 3)`` of sparse edges are unused.
         :param edge_types: ``[num_edges]`` of integers from ``0..num_edge_types-1`` or an empty tensor
@@ -255,7 +255,7 @@ class RelationalTransformerDecoderLayer(nn.Module):
         normalisation_mode: Literal["off", "prenorm", "postnorm"] = "postnorm",
     ):
         super().__init__()
-        self.encoder = RelationalTransformerEncoderLayer(
+        self.decoder = RelationalTransformerEncoderLayer(
             d_model=d_model,
             key_query_dimension=key_query_dimension,
             value_dimension=value_dimension,
@@ -312,8 +312,10 @@ class RelationalTransformerDecoderLayer(nn.Module):
         """
         :param tgt: A ``[batch_size, seq_len, D]`` tensor.
         :param memory: A ``[batch_size, mem_len, D]`` tensor.
-        :param tgt_mask: A ``[batch_size, seq_len]`` bool tensor.  ``True`` values are those
-            that should be masked (no attention paid).
+        :param tgt_mask: A ``[batch_size, seq_len]`` or ``[batch_size, seq_len, seq_len]`` bool tensor.
+            ``True`` values are those that should be masked (no attention paid).
+            For "causal" attention, ``tgt_mask`` should be 3D and ``tgt_mask[:, i, j] = i > j``,
+            i.e. the upper-triangular elements should be ``True``.
         :param memory_mask: A ``[batch_size, mem_len]`` bool tensor.  ``True`` values are those
             that should be masked (no attention paid).
         :param self_edges: ``[num_self_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``
@@ -361,7 +363,7 @@ class RelationalTransformerDecoderLayer(nn.Module):
 
             return src + self.dropout(rezero_alpha * src2)
 
-        return self.encoder(
+        return self.decoder(
             tgt,
             tgt_mask,
             edges=self_edges,

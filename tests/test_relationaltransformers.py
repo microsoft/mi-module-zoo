@@ -200,6 +200,7 @@ class TestRelationalTransformers(unittest.TestCase):
             "tgt": TensorSpec("batch_size", "seq_len", "D"),
             "memory": TensorSpec("batch_size", "mem_len", "D"),
             "tgt_mask": TensorSpec("batch_size", "seq_len"),
+            "tgt_mask_2d": TensorSpec("batch_size", "seq_len", "seq_len"),
             "memory_mask": TensorSpec("batch_size", "mem_len"),
             # Sparse self-relational edges
             "self_edges_batch_idx": TensorSpec("num_edges", indexed_dim="batch_size"),
@@ -312,6 +313,15 @@ class TestRelationalTransformers(unittest.TestCase):
                     # Enforce at least one element per set.
                     tgt_mask[:, 0] = False
 
+                tgt_mask_2d = (
+                    tensors["tgt_mask_2d"] < 0.2 if rel_transformer_setting.use_mask else None
+                )
+                if tgt_mask_2d is not None:
+                    # Enforce attending to self
+                    tgt_mask_2d[
+                        :, torch.arange(tgt_mask.shape[1]), torch.arange(tgt_mask.shape[1])
+                    ] = False
+
                 memory_mask = (
                     tensors["memory_mask"] > 0.5 if rel_transformer_setting.use_mask else None
                 )
@@ -336,3 +346,25 @@ class TestRelationalTransformers(unittest.TestCase):
 
                 self.assertEqual(out.shape, (shapes["batch_size"], shapes["seq_len"], shapes["D"]))
                 self.assertTrue(is_finite_tensor(out))
+
+                if tgt_mask_2d is not None:
+                    # Test 2D mask
+                    out = decoder(
+                        tgt=tensors["tgt"],
+                        memory=tensors["memory"],
+                        tgt_mask=tgt_mask_2d,
+                        memory_mask=memory_mask,
+                        self_edges=self_edges,
+                        self_edge_types=self_edge_types,
+                        encoder_edges=encoder_edges,
+                        encoder_edge_types=encoder_edge_types,
+                        dense_self_relations_kq=dense_self_relations_kq,
+                        dense_self_relations_kv=dense_self_relations_kv,
+                        dense_encoder_relations_kq=dense_encoder_relations_kq,
+                        dense_encoder_relations_kv=dense_encoder_relations_kv,
+                    )
+
+                    self.assertEqual(
+                        out.shape, (shapes["batch_size"], shapes["seq_len"], shapes["D"])
+                    )
+                    self.assertTrue(is_finite_tensor(out))
