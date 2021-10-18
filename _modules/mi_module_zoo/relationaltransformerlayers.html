@@ -281,8 +281,8 @@
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param src: A ``[batch_size, seq_len, D]`` tensor.</span>
-<span class="sd">        :param src_mask: A ``[batch_size, seq_len]`` bool tensor.  ``True`` values are those</span>
-<span class="sd">            that should be masked (no attention paid).</span>
+<span class="sd">        :param src_mask: A ``[batch_size, seq_len]`` or ``[batch_size, seq_len (query), seq_len (key)]`` bool tensor.</span>
+<span class="sd">            ``True`` values are those that should be masked (no attention paid).</span>
 <span class="sd">        :param edges: ``[num_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``</span>
 <span class="sd">          or an empty tensor of shape ``(0, 3)`` of sparse edges are unused.</span>
 <span class="sd">        :param edge_types: ``[num_edges]`` of integers from ``0..num_edge_types-1`` or an empty tensor</span>
@@ -359,7 +359,7 @@
         <span class="n">normalisation_mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;off&quot;</span><span class="p">,</span> <span class="s2">&quot;prenorm&quot;</span><span class="p">,</span> <span class="s2">&quot;postnorm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;postnorm&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">RelationalTransformerEncoderLayer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">RelationalTransformerEncoderLayer</span><span class="p">(</span>
             <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span>
             <span class="n">key_query_dimension</span><span class="o">=</span><span class="n">key_query_dimension</span><span class="p">,</span>
             <span class="n">value_dimension</span><span class="o">=</span><span class="n">value_dimension</span><span class="p">,</span>
@@ -416,8 +416,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param tgt: A ``[batch_size, seq_len, D]`` tensor.</span>
 <span class="sd">        :param memory: A ``[batch_size, mem_len, D]`` tensor.</span>
-<span class="sd">        :param tgt_mask: A ``[batch_size, seq_len]`` bool tensor.  ``True`` values are those</span>
-<span class="sd">            that should be masked (no attention paid).</span>
+<span class="sd">        :param tgt_mask: A ``[batch_size, seq_len]`` or ``[batch_size, seq_len, seq_len]`` bool tensor.</span>
+<span class="sd">            ``True`` values are those that should be masked (no attention paid).</span>
+<span class="sd">            For &quot;causal&quot; attention, ``tgt_mask`` should be 3D and ``tgt_mask[:, i, j] = i &gt; j``,</span>
+<span class="sd">            i.e. the upper-triangular elements should be ``True``.</span>
 <span class="sd">        :param memory_mask: A ``[batch_size, mem_len]`` bool tensor.  ``True`` values are those</span>
 <span class="sd">            that should be masked (no attention paid).</span>
 <span class="sd">        :param self_edges: ``[num_self_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``</span>
@@ -465,7 +467,7 @@
 
             <span class="k">return</span> <span class="n">src</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">rezero_alpha</span> <span class="o">*</span> <span class="n">src2</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span>
             <span class="n">tgt</span><span class="p">,</span>
             <span class="n">tgt_mask</span><span class="p">,</span>
             <span class="n">edges</span><span class="o">=</span><span class="n">self_edges</span><span class="p">,</span>

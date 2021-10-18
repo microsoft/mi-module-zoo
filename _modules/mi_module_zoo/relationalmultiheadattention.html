@@ -228,8 +228,8 @@
 <span class="sd">        :param queries: ``[batch_size, query_len, D]``</span>
 <span class="sd">        :param keys: ``[batch_size, key_len, D]``</span>
 <span class="sd">        :param values: ``[batch_size, key_len, H]``</span>
-<span class="sd">        :param masked_elements: ``[batch_size, key_len]``  ``True`` values are those</span>
-<span class="sd">            that should be masked (no attention paid). ``None`` keeps everything unmasked.</span>
+<span class="sd">        :param masked_elements: bool tensor of shape ``[batch_size, key_len]`` or ``[batch_size, query_len, key_len]``</span>
+<span class="sd">            ``True`` values are those that should be masked (no attention paid). ``None`` keeps everything unmasked.</span>
 <span class="sd">        :param edges: ``[num_edges, 3]`` each row has the form ``(batch_idx, source_idx, target_idx)``</span>
 <span class="sd">        :param edge_types: ``[num_edges]`` of integers from ``0..num_edge_types``</span>
 <span class="sd">        :param dense_relations_kq: Optional ``[batch_size, query_len, key_len, num_heads]``</span>
@@ -267,7 +267,10 @@
         <span class="n">attention_scores</span> <span class="o">=</span> <span class="n">attention_scores</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># [B, query_len, num_heads, key_len]</span>
 
         <span class="k">if</span> <span class="n">masked_elements</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">attention_scores</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">masked_elements</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">masked_elements</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">attention_scores</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">masked_elements</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">attention_scores</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">masked_elements</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
 
         <span class="n">attention_probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">attention_scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">attention_probs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dropout_layer</span><span class="p">(</span><span class="n">attention_probs</span><span class="p">)</span>
