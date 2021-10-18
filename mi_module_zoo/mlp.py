@@ -9,7 +9,7 @@ def construct_mlp(
     activation_layer: nn.Module = nn.ReLU(),
 ) -> nn.Sequential:
     """
-    Construct a multi-linear perceptron (MLP). No non-linearity is *not* applied at the final layer.
+    Construct a multi-linear perceptron (MLP). No non-linearity is applied at the final layer.
 
     :param input_dim: the input dimension of the MLP.
     :param out_dim: the input dimension of the MLP.
